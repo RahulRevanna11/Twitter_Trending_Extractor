@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitter Trend Fetcher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Twitter Trend Fetcher</h1>
+    <button onclick="runScript()">Click here to run the script</button>
+
+    <div id="result"></div>
+
+    <script>
+        function runScript() {
+            // Make an AJAX call to trigger the script execution
+            fetch('http://localhost:5000/run_script')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    // Show the results
+                    let resultHtml = `<p>These are the most happening topics as on ${data.timestamp}</p>`;
+                    resultHtml += `<ul>`;
+                    for (let i = 1; i <= 5; i++) {
+                        resultHtml += `<li>Name of trend ${i}: ${data['trend' + i]}</li>`;
+                    }
+                    resultHtml += `</ul>`;
+                    resultHtml += `<p>The IP address used for this query was ${data.ip_address}</p>`;
+                    resultHtml += `<p>Here's a JSON extract of this record from the MongoDB:</p>`;
+                    resultHtml += `<pre>${JSON.stringify(data, null, 4)}</pre>`;
+
+                    document.getElementById("result").innerHTML = resultHtml;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
